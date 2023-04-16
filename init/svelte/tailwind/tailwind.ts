@@ -1,3 +1,5 @@
+import { path } from "../deps.ts";
+
 export const addTailwind = async (name: string) => {
 	const installPackages = [
 		"npm",
@@ -15,15 +17,15 @@ export const addTailwind = async (name: string) => {
 	await process.status();
 
 	await Deno.copyFile(
-		new URL("assets/tailwind.config.js", import.meta.url),
+		path.fromFileUrl(new URL("assets/tailwind.config.js", import.meta.url)),
 		`${name}/tailwind.config.js`,
 	);
 	await Deno.copyFile(
-		new URL("assets/postcss.config.js", import.meta.url),
+		path.fromFileUrl(new URL("assets/postcss.config.js", import.meta.url)),
 		`${name}/postcss.config.js`,
 	);
 	await Deno.copyFile(
-		new URL("assets/app.postcss", import.meta.url),
+		path.fromFileUrl(new URL("assets/app.postcss", import.meta.url)),
 		`${name}/src/app.postcss`,
 	);
 };

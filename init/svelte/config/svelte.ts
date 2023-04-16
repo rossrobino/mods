@@ -1,4 +1,4 @@
-import { create } from "../deps.ts";
+import { create, path } from "../deps.ts";
 
 export const configureSvelte = async (name: string) => {
 	await create(name, {
@@ -12,7 +12,7 @@ export const configureSvelte = async (name: string) => {
 	});
 
 	await Deno.copyFile(
-		new URL("assets/+layout.svelte", import.meta.url),
+		path.fromFileUrl(new URL("assets/+layout.svelte", import.meta.url)),
 		`${name}/src/routes/+layout.svelte`,
 	);
 };
