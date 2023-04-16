@@ -11,8 +11,12 @@ export const configureSvelte = async (name: string) => {
 		vitest: false,
 	});
 
+	const dir = path.dirname(import.meta.url);
+	const fileUrl = path.join(dir, "assets/+layout.svelte");
+	const filePath = path.fromFileUrl(fileUrl);
+
 	await Deno.copyFile(
-		path.fromFileUrl(new URL("assets/+layout.svelte", import.meta.url)),
+		filePath,
 		`${name}/src/routes/+layout.svelte`,
 	);
 };

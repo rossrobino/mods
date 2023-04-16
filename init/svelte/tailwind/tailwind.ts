@@ -16,16 +16,25 @@ export const addTailwind = async (name: string) => {
 	const process = Deno.run({ cmd: installPackages });
 	await process.status();
 
+	const dir = path.dirname(import.meta.url);
+	const tailwindConfig = path.fromFileUrl(
+		path.join(dir, "assets/tailwind.config.js"),
+	);
+	const postCssConfig = path.fromFileUrl(
+		path.join(dir, "assets/postcss.config.js"),
+	);
+	const appCss = path.fromFileUrl(path.join(dir, "assets/app.postcss"));
+
 	await Deno.copyFile(
-		path.fromFileUrl(new URL("assets/tailwind.config.js", import.meta.url)),
+		tailwindConfig,
 		`${name}/tailwind.config.js`,
 	);
 	await Deno.copyFile(
-		path.fromFileUrl(new URL("assets/postcss.config.js", import.meta.url)),
+		postCssConfig,
 		`${name}/postcss.config.js`,
 	);
 	await Deno.copyFile(
-		path.fromFileUrl(new URL("assets/app.postcss", import.meta.url)),
+		appCss,
 		`${name}/src/app.postcss`,
 	);
 };
