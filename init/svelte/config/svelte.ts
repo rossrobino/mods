@@ -12,7 +12,7 @@ export const configureSvelte = async (name: string) => {
 	});
 
 	await Deno.copyFile(
-		new URL("./assets/+layout.svelte", import.meta.url),
+		new URL("assets/+layout.svelte", import.meta.url),
 		`${name}/src/routes/+layout.svelte`,
 	);
 };

@@ -15,15 +15,15 @@ export const addTailwind = async (name: string) => {
 	await process.status();
 
 	await Deno.copyFile(
-		new URL("./assets/tailwind.config.js", import.meta.url),
+		new URL("assets/tailwind.config.js", import.meta.url),
 		`${name}/tailwind.config.js`,
 	);
 	await Deno.copyFile(
-		new URL("./assets/postcss.config.js", import.meta.url),
+		new URL("assets/postcss.config.js", import.meta.url),
 		`${name}/postcss.config.js`,
 	);
 	await Deno.copyFile(
-		new URL("./assets/app.postcss", import.meta.url),
+		new URL("assets/app.postcss", import.meta.url),
 		`${name}/src/app.postcss`,
 	);
 };
