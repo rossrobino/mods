@@ -1,40 +1,85 @@
-import { path } from "../deps.ts";
+const appPostCss = `@tailwind base;
+@tailwind components;
+@tailwind utilities;
+`;
 
+const postCssConfig = `/** @type {import("postcss-load-config").Config} */
+export default {
+	plugins: {
+		tailwindcss: {},
+		autoprefixer: {},
+	},
+};
+`;
+
+const tailwindConfig = `/** @type {import('tailwindcss').Config} */
+export default {
+	content: ["./src/**/*.{html,js,svelte,ts}"],
+	theme: {
+		extend: {},
+	},
+	plugins: [],
+};
+`;
+
+const layout = `<script lang="ts">
+	import "../app.postcss";
+</script>
+
+<main><slot /></main>
+`;
+
+/**
+ * - Installs required dependencies
+ * - Creates config files
+ * - Adds TailwindCSS prettier plugin
+ * - Adds a root +layout.svelte page
+ *
+ * @param name - name of the project folder
+ */
 export const addTailwind = async (name: string) => {
-	const installPackages = [
-		"npm",
-		"--prefix",
-		`./${name}`,
-		"i",
-		"-D",
-		"tailwindcss",
-		"postcss",
-		"autoprefixer",
-		"prettier-plugin-tailwindcss",
-	];
-
-	const process = Deno.run({ cmd: installPackages });
+	// install dependencies
+	const process = Deno.run({
+		cmd: [
+			"npm",
+			"--prefix",
+			`./${name}`,
+			"i",
+			"-D",
+			"tailwindcss",
+			"postcss",
+			"autoprefixer",
+			"prettier-plugin-tailwindcss",
+		],
+	});
 	await process.status();
 
-	const dir = path.dirname(import.meta.url);
-	const tailwindConfig = path.fromFileUrl(
-		path.join(dir, "assets/tailwind.config.js"),
+	// create config files
+	await Deno.writeTextFile(
+		`./${name}/src/app.postcss`,
+		appPostCss,
 	);
-	const postCssConfig = path.fromFileUrl(
-		path.join(dir, "assets/postcss.config.js"),
-	);
-	const appCss = path.fromFileUrl(path.join(dir, "assets/app.postcss"));
-
-	await Deno.copyFile(
-		tailwindConfig,
-		`${name}/tailwind.config.js`,
-	);
-	await Deno.copyFile(
+	await Deno.writeTextFile(
+		`./${name}/postcss.config.js`,
 		postCssConfig,
-		`${name}/postcss.config.js`,
 	);
-	await Deno.copyFile(
-		appCss,
-		`${name}/src/app.postcss`,
+	await Deno.writeTextFile(
+		`./${name}/tailwind.config.js`,
+		tailwindConfig,
+	);
+
+	// add prettier plugin
+	const prettierrcFile = await Deno.readTextFile(`./${name}/.prettierrc`);
+	const prettierJson = JSON.parse(prettierrcFile);
+	prettierJson.plugins.push("prettier-plugin-tailwindcss");
+	await Deno.writeTextFile(
+		`./${name}/.prettierrc`,
+		JSON.stringify(prettierJson, null, 4),
+	);
+
+	// create root +layout.svelte
+	await Deno.writeTextFile(
+		`./${name}/src/routes/+layout.svelte`,
+		layout,
 	);
 };
