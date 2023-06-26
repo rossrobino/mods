@@ -1,10 +1,11 @@
 import { addTailwind } from "./tailwind/tailwind.ts";
 import { configurePrettier } from "./prettier/prettier.ts";
-import { updateDeps } from "./ncu/ncu.ts";
-import { create } from "./deps.ts";
+import { updateDeps } from "../../ncu/ncu.ts";
+import { create } from "npm:create-svelte";
 
-const name = String(prompt("Enter project name:") ?? "newSvelteApp");
+const name = prompt("\nEnter project name:") ?? "newSvelteApp";
 
+console.log("\n- Creating project: " + name);
 await create(name, {
 	name,
 	template: "skeleton",
@@ -16,28 +17,19 @@ await create(name, {
 });
 
 await addTailwind(name);
+
 await configurePrettier(name);
+
 await updateDeps(name);
 
-// install all packages
-const install = Deno.run({
-	cmd: [
-		"npm",
-		"--prefix",
-		`./${name}`,
-		"i",
-	],
-});
-await install.status();
+console.log("- Installing packages");
+await new Deno.Command("npm", {
+	args: ["--prefix", `./${name}`, "i"],
+}).output();
 
-// format project
-const format = Deno.run({
-	cmd: [
-		"npm",
-		"--prefix",
-		`./${name}`,
-		"run",
-		"format",
-	],
-});
-await format.status();
+console.log("- Formatting");
+await new Deno.Command("npm", {
+	args: ["--prefix", `./${name}`, "run", "format"],
+}).output();
+
+console.log("- Complete\n");

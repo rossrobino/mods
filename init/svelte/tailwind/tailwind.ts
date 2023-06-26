@@ -38,35 +38,27 @@ const layout = `<script lang="ts">
  * @param name - name of the project folder
  */
 export const addTailwind = async (name: string) => {
+	console.log("- Adding TailwindCSS");
+
 	// install dependencies
-	const process = Deno.run({
-		cmd: [
-			"npm",
+	await new Deno.Command("npm", {
+		args: [
 			"--prefix",
 			`./${name}`,
 			"i",
 			"-D",
+			"--package-lock-only",
 			"tailwindcss",
 			"postcss",
 			"autoprefixer",
 			"prettier-plugin-tailwindcss",
 		],
-	});
-	await process.status();
+	}).output();
 
 	// create config files
-	await Deno.writeTextFile(
-		`./${name}/src/app.postcss`,
-		appPostCss,
-	);
-	await Deno.writeTextFile(
-		`./${name}/postcss.config.js`,
-		postCssConfig,
-	);
-	await Deno.writeTextFile(
-		`./${name}/tailwind.config.js`,
-		tailwindConfig,
-	);
+	await Deno.writeTextFile(`./${name}/src/app.postcss`, appPostCss);
+	await Deno.writeTextFile(`./${name}/postcss.config.js`, postCssConfig);
+	await Deno.writeTextFile(`./${name}/tailwind.config.js`, tailwindConfig);
 
 	// add prettier plugin
 	const prettierrcFile = await Deno.readTextFile(`./${name}/.prettierrc`);
@@ -78,8 +70,5 @@ export const addTailwind = async (name: string) => {
 	);
 
 	// create root +layout.svelte
-	await Deno.writeTextFile(
-		`./${name}/src/routes/+layout.svelte`,
-		layout,
-	);
+	await Deno.writeTextFile(`./${name}/src/routes/+layout.svelte`, layout);
 };

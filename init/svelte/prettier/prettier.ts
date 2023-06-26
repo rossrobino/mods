@@ -4,6 +4,8 @@
  * @param name - name of the project folder
  */
 export const configurePrettier = async (name: string) => {
+	console.log("- Configuring prettier");
+
 	const prettierrcFile = await Deno.readTextFile(`./${name}/.prettierrc`);
 	const prettierJson = JSON.parse(prettierrcFile);
 

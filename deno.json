@@ -3,19 +3,13 @@
 		"initSvelte": "deno run -A init/svelte/mod.ts"
 	},
 	"lint": {
-		"files": {
-			"include": ["./"]
-		}
+		"include": ["./"]
 	},
 	"fmt": {
-		"files": {
-			"include": ["./"]
-		},
-		"options": {
-			"useTabs": true,
-			"indentWidth": 4,
-			"lineWidth": 80,
-			"proseWrap": "preserve"
-		}
-	}
+		"include": ["./"],
+		"useTabs": true,
+		"indentWidth": 4,
+		"lineWidth": 80
+	},
+	"lock": false
 }
